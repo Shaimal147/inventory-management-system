@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Page;
+import java.math.BigDecimal;
 
 import jakarta.validation.Valid;
 
@@ -47,10 +48,19 @@ public class ProductController {
     public ResponseEntity<Page<GetProductDto>> getProducts(
         @RequestParam (value = "page", defaultValue = "0") int page,
         @RequestParam (value = "size", defaultValue = "20") int size,
-        @RequestParam (required = false) Long id,
-        @RequestParam (required = false) Boolean lowStock
+        @RequestParam (required = false) Long categoryId,
+        @RequestParam (required = false) Boolean lowStock,
+        @RequestParam (required = false) BigDecimal minPrice,
+        @RequestParam (required = false) BigDecimal maxPrice
     ) {
-        Page<GetProductDto> response = productService.getProducts(page, size, id, lowStock);
+        Page<GetProductDto> response = productService.getProducts(
+            page,
+            size,
+            categoryId,
+            lowStock,
+            minPrice,
+            maxPrice
+        );
 
         return ResponseEntity
             .status(HttpStatus.OK)

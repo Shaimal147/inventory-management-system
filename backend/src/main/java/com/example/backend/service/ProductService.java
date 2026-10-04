@@ -1,5 +1,7 @@
 package com.example.backend.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -85,7 +87,14 @@ public class ProductService {
         return productResponse;
     }
 
-    public Page<GetProductDto> getProducts(int page, int size, Long categoryId, Boolean lowStock) {
+    public Page<GetProductDto> getProducts(
+        int page,
+        int size,
+        Long categoryId,
+        Boolean lowStock,
+        BigDecimal minPrice,
+        BigDecimal maxPrice
+    ) {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<ProductEntity> products;
@@ -97,7 +106,7 @@ public class ProductService {
             );
         }
 
-        products = productRepository.findFiltered(category, lowStock, pageable);    
+        products = productRepository.findFiltered(category, lowStock, minPrice, maxPrice, pageable);    
 
 
         Page<GetProductDto> productsResponse = products.map(product -> new GetProductDto(

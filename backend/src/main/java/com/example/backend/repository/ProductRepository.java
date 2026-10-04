@@ -3,6 +3,9 @@ package com.example.backend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.math.BigDecimal;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,8 +24,16 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
                     :lowStock IS NULL 
                     OR (:lowStock = TRUE AND p.quantity <= p.reorderLevel) 
                     OR (:lowStock = FALSE AND p.quantity > p.reorderLevel)
-                    ) 
+                    )
+                AND (:minPrice IS NULL OR p.price >= :minPrice)
+                AND (:maxPrice IS NULL OR p.price <= :maxPrice) 
             """
         )
-        Page<ProductEntity> findFiltered(@Param ("category") CategoryEntity category, @Param ("lowStock") Boolean lowStock, Pageable pageable);
+        Page<ProductEntity> findFiltered(
+            @Param ("category") CategoryEntity category,
+            @Param ("lowStock") Boolean lowStock,
+            @Param ("minPrice") BigDecimal minPrice,
+            @Param ("maxPrice") BigDecimal maxPrice,
+            Pageable pageable
+        );
 }
