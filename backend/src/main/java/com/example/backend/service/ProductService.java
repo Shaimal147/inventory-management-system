@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.backend.dto.*;
 import com.example.backend.entity.CategoryEntity;
 import com.example.backend.entity.ProductEntity;
+import com.example.backend.entity.SupplierEntity;
 import com.example.backend.repository.*;
 import com.example.backend.exception.*;
 
@@ -18,10 +19,16 @@ import com.example.backend.exception.*;
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final SupplierRepository supplierRepository;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductService(
+        ProductRepository productRepository,
+        CategoryRepository categoryRepository,
+        SupplierRepository supplierRepository
+    ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.supplierRepository = supplierRepository;
     }
 
     public CreateProductResponseDto createProduct(CreateProductDto newProduct) {
@@ -35,7 +42,9 @@ public class ProductService {
             () -> new ResourceNotFoundException("Category not found with id: %d".formatted(newProduct.categoryId()))
         );
 
-
+        SupplierEntity supplier = supplierRepository.findById(newProduct.supplierId()).orElseThrow(
+            () -> new ResourceNotFoundException("Supplier not found with id: %d".formatted(newProduct.supplierId()))
+        );
 
         product.setName(newProduct.name());
         product.setSku(newProduct.sku());
@@ -44,7 +53,7 @@ public class ProductService {
         product.setQuantity(newProduct.quantity());
         product.setReorderLevel(newProduct.reorderLevel());
         product.setCategory(category);
-        product.setSupplier(newProduct.supplier());
+        product.setSupplier(supplier);
 
         ProductEntity savedProduct = productRepository.save(product);
 
@@ -57,7 +66,7 @@ public class ProductService {
             savedProduct.getQuantity(),
             savedProduct.getReorderLevel(),
             savedProduct.getCategory().getId(),
-            savedProduct.getSupplier(),
+            savedProduct.getSupplier().getName(),
             savedProduct.getCreatedAt(),
             savedProduct.getUpdatedAt()
         );
@@ -79,7 +88,7 @@ public class ProductService {
             product.getQuantity(),
             product.getReorderLevel(),
             product.getCategory().getId(),
-            product.getSupplier(),
+            product.getSupplier().getName(),
             product.getCreatedAt(),
             product.getUpdatedAt()
         );
@@ -118,7 +127,7 @@ public class ProductService {
             product.getQuantity(),
             product.getReorderLevel(),
             product.getCategory().getId(),
-            product.getSupplier(),
+            product.getSupplier().getName(),
             product.getCreatedAt(),
             product.getUpdatedAt()
         ));

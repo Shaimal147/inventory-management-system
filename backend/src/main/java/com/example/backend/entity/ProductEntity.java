@@ -33,7 +33,10 @@ public class ProductEntity {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
-    private String supplier; // to be changed later when relationships are built
+
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private SupplierEntity supplier;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -101,11 +104,11 @@ public class ProductEntity {
         this.category = category;
     }
 
-    public String getSupplier() {
+    public SupplierEntity getSupplier() {
         return supplier;
     }
 
-    public void setSupplier(String supplier) {
+    public void setSupplier(SupplierEntity supplier) {
         this.supplier = supplier;
     }
 

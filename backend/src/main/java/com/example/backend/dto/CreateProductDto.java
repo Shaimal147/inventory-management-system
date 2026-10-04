@@ -32,7 +32,8 @@ public record CreateProductDto(
     @Positive  
     Long categoryId,
 
-    @NotBlank  
-    String supplier // Supplier stored as just a String for now
+    @NotNull
+    @Positive   
+    Long supplierId
 ) {
 }
