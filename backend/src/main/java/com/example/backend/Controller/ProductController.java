@@ -47,9 +47,10 @@ public class ProductController {
     public ResponseEntity<Page<GetProductDto>> getProducts(
         @RequestParam (value = "page", defaultValue = "0") int page,
         @RequestParam (value = "size", defaultValue = "20") int size,
-        @RequestParam (required = false) Long id
+        @RequestParam (required = false) Long id,
+        @RequestParam (required = false) Boolean lowStock
     ) {
-        Page<GetProductDto> response = productService.getProducts(page, size, id);
+        Page<GetProductDto> response = productService.getProducts(page, size, id, lowStock);
 
         return ResponseEntity
             .status(HttpStatus.OK)
