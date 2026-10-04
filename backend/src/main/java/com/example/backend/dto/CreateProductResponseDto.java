@@ -11,7 +11,7 @@ public record CreateProductResponseDto(
         BigDecimal price,
         int quantity,
         int reorderLevel,
-        String category,
+        Long categoryId,
         String supplier,
         LocalDateTime createdAt,
         LocalDateTime updatedAt

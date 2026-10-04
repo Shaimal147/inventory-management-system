@@ -26,8 +26,8 @@ public record CreateProductDto(
     @PositiveOrZero 
     int reorderLevel,
 
-    @NotBlank  
-    String category, // category stored as just a String for now
+    @PositiveOrZero 
+    Long categoryId, // category stored as just a String for now
 
     @NotBlank  
     String supplier // Supplier stored as just a String for now

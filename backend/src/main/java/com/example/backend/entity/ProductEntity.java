@@ -11,6 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity 
 public class ProductEntity {
@@ -27,7 +29,10 @@ public class ProductEntity {
     private BigDecimal price;
     private int quantity;
     private int reorderLevel;
-    private String category; // to be changed later when relationships are built
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
     private String supplier; // to be changed later when relationships are built
 
     @CreationTimestamp
@@ -88,11 +93,11 @@ public class ProductEntity {
         this.reorderLevel = reorderLevel;
     }
 
-    public String getCategory() {
+    public CategoryEntity getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(CategoryEntity category) {
         this.category = category;
     }
 

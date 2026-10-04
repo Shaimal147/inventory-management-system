@@ -7,24 +7,32 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.*;
+import com.example.backend.entity.CategoryEntity;
 import com.example.backend.entity.ProductEntity;
-import com.example.backend.repository.ProductRepository;
+import com.example.backend.repository.*;
 import com.example.backend.exception.*;
 
 @Service 
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public CreateProductResponseDto createProduct(CreateProductDto newProduct) {
         ProductEntity product = new ProductEntity();
+        CategoryEntity category = categoryRepository.findById(newProduct.categoryId()).orElseThrow(
+            () -> new ResourceNotFoundException("Category not found with id: %d".formatted(newProduct.categoryId()))
+        );
 
         if(productRepository.existsBySku(newProduct.sku())) {
             throw new DuplicateSkuException("Sku already exists");
         }
+
+
 
         product.setName(newProduct.name());
         product.setSku(newProduct.sku());
@@ -32,7 +40,7 @@ public class ProductService {
         product.setPrice(newProduct.price());
         product.setQuantity(newProduct.quantity());
         product.setReorderLevel(newProduct.reorderLevel());
-        product.setCategory(newProduct.category());
+        product.setCategory(category);
         product.setSupplier(newProduct.supplier());
 
         ProductEntity savedProduct = productRepository.save(product);
@@ -45,7 +53,7 @@ public class ProductService {
             savedProduct.getPrice(),
             savedProduct.getQuantity(),
             savedProduct.getReorderLevel(),
-            savedProduct.getCategory(),
+            savedProduct.getCategory().getId(),
             savedProduct.getSupplier(),
             savedProduct.getCreatedAt(),
             savedProduct.getUpdatedAt()
@@ -67,7 +75,7 @@ public class ProductService {
             product.getPrice(),
             product.getQuantity(),
             product.getReorderLevel(),
-            product.getCategory(),
+            product.getCategory().getId(),
             product.getSupplier(),
             product.getCreatedAt(),
             product.getUpdatedAt()
@@ -81,10 +89,6 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<ProductEntity> products = productRepository.findAll(pageable);
 
-        if (products == null) {
-            throw new ResourceNotFoundException("No products found");
-        }
-
         Page<GetProductDto> productsResponse = products.map(product -> new GetProductDto(
             product.getId(),
             product.getName(),
@@ -93,7 +97,7 @@ public class ProductService {
             product.getPrice(),
             product.getQuantity(),
             product.getReorderLevel(),
-            product.getCategory(),
+            product.getCategory().getId(),
             product.getSupplier(),
             product.getCreatedAt(),
             product.getUpdatedAt()
