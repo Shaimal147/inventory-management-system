@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.example.backend.dto.*;
 import com.example.backend.entity.ProductEntity;
 import com.example.backend.repository.ProductRepository;
+import com.example.backend.exception.*;
 
 @Service 
 public class ProductService {
@@ -16,6 +17,10 @@ public class ProductService {
 
     public CreateProductResponseDto createProduct(CreateProductDto newProduct) {
         ProductEntity product = new ProductEntity();
+
+        if(productRepository.existsBySku(newProduct.sku())) {
+            throw new DuplicateSkuException("Sku already exists");
+        }
 
         product.setName(newProduct.name());
         product.setSku(newProduct.sku());
