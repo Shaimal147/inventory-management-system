@@ -1,5 +1,9 @@
 package com.example.backend.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.*;
@@ -70,5 +74,31 @@ public class ProductService {
         );
 
         return productResponse;
+    }
+
+    public Page<GetProductDto> getProducts(int page, int size) {
+        Sort sort = Sort.by("createdAt").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<ProductEntity> products = productRepository.findAll(pageable);
+
+        if (products == null) {
+            throw new ResourceNotFoundException("No products found");
+        }
+
+        Page<GetProductDto> productsResponse = products.map(product -> new GetProductDto(
+            product.getId(),
+            product.getName(),
+            product.getSku(),
+            product.getDescription(),
+            product.getPrice(),
+            product.getQuantity(),
+            product.getReorderLevel(),
+            product.getCategory(),
+            product.getSupplier(),
+            product.getCreatedAt(),
+            product.getUpdatedAt()
+        ));
+
+        return productsResponse;
     }
 }

@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
 
 import jakarta.validation.Valid;
 
@@ -35,6 +37,18 @@ public class ProductController {
     @GetMapping ("/{id}")
     public ResponseEntity<GetProductDto> getProduct(@PathVariable Long id) {
         GetProductDto response = productService.getProduct(id);
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<GetProductDto>> getProducts(
+        @RequestParam (value = "page", defaultValue = "0") int page,
+        @RequestParam (value = "page", defaultValue = "20") int size 
+    ) {
+        Page<GetProductDto> response = productService.getProducts(page, size);
 
         return ResponseEntity
             .status(HttpStatus.OK)
