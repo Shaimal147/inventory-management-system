@@ -14,7 +14,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public String createProduct(CreateProductDto newProduct) {
+    public CreateProductResponseDto createProduct(CreateProductDto newProduct) {
         ProductEntity product = new ProductEntity();
 
         product.setName(newProduct.name());
@@ -26,8 +26,22 @@ public class ProductService {
         product.setCategory(newProduct.category());
         product.setSupplier(newProduct.supplier());
 
-        productRepository.save(product);
+        ProductEntity savedProduct = productRepository.save(product);
 
-        return "Successfully created product";
+        CreateProductResponseDto productResponse = new CreateProductResponseDto(
+            savedProduct.getId(),
+            savedProduct.getName(),
+            savedProduct.getSku(),
+            savedProduct.getDescription(),
+            savedProduct.getPrice(),
+            savedProduct.getQuantity(),
+            savedProduct.getReorderLevel(),
+            savedProduct.getCategory(),
+            savedProduct.getSupplier(),
+            savedProduct.getCreatedAt(),
+            savedProduct.getUpdatedAt()
+        );
+
+        return productResponse;
     }
 }
