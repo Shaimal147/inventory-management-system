@@ -8,6 +8,7 @@ public record CreateProductDto(
     String description,
     BigDecimal price,
     int quantity,
+    int reorderLevel,
     String category, // category stored as just a String for now
     String supplier // Supplier stored as just a String for now
 ) {
