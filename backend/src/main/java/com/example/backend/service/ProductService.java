@@ -49,4 +49,26 @@ public class ProductService {
 
         return productResponse;
     }
+
+    public GetProductDto getProduct(Long id) {
+        ProductEntity product = productRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("Product not found with id: %d".formatted(id))
+        );
+
+        GetProductDto productResponse = new GetProductDto(
+            product.getId(),
+            product.getName(),
+            product.getSku(),
+            product.getDescription(),
+            product.getPrice(),
+            product.getQuantity(),
+            product.getReorderLevel(),
+            product.getCategory(),
+            product.getSupplier(),
+            product.getCreatedAt(),
+            product.getUpdatedAt()
+        );
+
+        return productResponse;
+    }
 }
