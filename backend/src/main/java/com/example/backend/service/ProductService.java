@@ -85,10 +85,20 @@ public class ProductService {
         return productResponse;
     }
 
-    public Page<GetProductDto> getProducts(int page, int size) {
+    public Page<GetProductDto> getProducts(int page, int size, Long categoryId) {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<ProductEntity> products = productRepository.findAll(pageable);
+        Page<ProductEntity> products;
+
+        if (categoryId == null) {
+            products = productRepository.findAll(pageable);
+        } else {
+            CategoryEntity category = categoryRepository.findById(categoryId).orElseThrow(
+                () -> new ResourceNotFoundException("Category not found by ID: %d".formatted(categoryId))
+            );
+
+            products = productRepository.findByCategory(category, pageable);
+        }
 
         Page<GetProductDto> productsResponse = products.map(product -> new GetProductDto(
             product.getId(),
