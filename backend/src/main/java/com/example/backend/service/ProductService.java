@@ -24,13 +24,14 @@ public class ProductService {
 
     public CreateProductResponseDto createProduct(CreateProductDto newProduct) {
         ProductEntity product = new ProductEntity();
-        CategoryEntity category = categoryRepository.findById(newProduct.categoryId()).orElseThrow(
-            () -> new ResourceNotFoundException("Category not found with id: %d".formatted(newProduct.categoryId()))
-        );
 
         if(productRepository.existsBySku(newProduct.sku())) {
             throw new DuplicateSkuException("Sku already exists");
         }
+
+        CategoryEntity category = categoryRepository.findById(newProduct.categoryId()).orElseThrow(
+            () -> new ResourceNotFoundException("Category not found with id: %d".formatted(newProduct.categoryId()))
+        );
 
 
 

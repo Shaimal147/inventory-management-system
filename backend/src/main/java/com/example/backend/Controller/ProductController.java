@@ -46,7 +46,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<GetProductDto>> getProducts(
         @RequestParam (value = "page", defaultValue = "0") int page,
-        @RequestParam (value = "page", defaultValue = "20") int size 
+        @RequestParam (value = "size", defaultValue = "20") int size 
     ) {
         Page<GetProductDto> response = productService.getProducts(page, size);
 

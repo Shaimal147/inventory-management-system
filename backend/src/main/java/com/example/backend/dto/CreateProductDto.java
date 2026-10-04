@@ -3,6 +3,8 @@ package com.example.backend.dto;
 import java.math.BigDecimal;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -17,7 +19,7 @@ public record CreateProductDto(
     @Size (min = 0, max = 50)
     String description,
 
-    @PositiveOrZero 
+    @Positive 
     BigDecimal price,
 
     @PositiveOrZero 
@@ -26,8 +28,9 @@ public record CreateProductDto(
     @PositiveOrZero 
     int reorderLevel,
 
-    @PositiveOrZero 
-    Long categoryId, // category stored as just a String for now
+    @NotNull 
+    @Positive  
+    Long categoryId,
 
     @NotBlank  
     String supplier // Supplier stored as just a String for now
