@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import com.example.backend.dto.*;
 import com.example.backend.service.*;
 
@@ -21,7 +23,7 @@ public class ProductController {
     }
 
     @PostMapping 
-    public ResponseEntity<CreateProductResponseDto> createProduct(@RequestBody CreateProductDto newProduct) {
+    public ResponseEntity<CreateProductResponseDto> createProduct(@Valid @RequestBody CreateProductDto newProduct) {
         CreateProductResponseDto response = productService.createProduct(newProduct);
 
         return ResponseEntity
