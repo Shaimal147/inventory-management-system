@@ -74,7 +74,10 @@ public class ProductController {
     }
 
     @PatchMapping ("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProductDetails(@PathVariable Long id, @RequestBody UpdateProductDto updateProductDto) {
+    public ResponseEntity<ProductResponseDto> updateProductDetails(
+        @PathVariable Long id,
+        @Valid @RequestBody UpdateProductDto updateProductDto
+    ) {
         ProductResponseDto response = productService.updateProductDetails(id, updateProductDto);
 
         return ResponseEntity
@@ -94,12 +97,12 @@ public class ProductController {
     @PostMapping ("/{id}/stock-movements")
     public ResponseEntity<StockMovementResponseDto> createStockMovement(
         @PathVariable Long id,
-        @RequestBody CreateStockMovementDto createStockMovementDto
+        @Valid @RequestBody CreateStockMovementDto createStockMovementDto
     ) {
         StockMovementResponseDto response = productService.createStockMovement(id, createStockMovementDto);
 
         return ResponseEntity
-            .status(HttpStatus.OK)
+            .status(HttpStatus.CREATED)
             .body(response);
     }
 }
