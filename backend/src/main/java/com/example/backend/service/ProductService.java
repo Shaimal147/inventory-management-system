@@ -31,7 +31,7 @@ public class ProductService {
         this.supplierRepository = supplierRepository;
     }
 
-    public CreateProductResponseDto createProduct(CreateProductDto newProduct) {
+    public ProductResponseDto createProduct(CreateProductDto newProduct) {
         ProductEntity product = new ProductEntity();
 
         if(productRepository.existsBySku(newProduct.sku())) {
@@ -57,7 +57,7 @@ public class ProductService {
 
         ProductEntity savedProduct = productRepository.save(product);
 
-        CreateProductResponseDto productResponse = new CreateProductResponseDto(
+        ProductResponseDto productResponse = new ProductResponseDto(
             savedProduct.getId(),
             savedProduct.getName(),
             savedProduct.getSku(),
@@ -114,13 +114,13 @@ public class ProductService {
 
         if (categoryId != null) {
             category = categoryRepository.findById(categoryId).orElseThrow(
-                () -> new ResourceNotFoundException("Category not found by ID: %d".formatted(categoryId))
+                () -> new ResourceNotFoundException("Category not found with ID: %d".formatted(categoryId))
             );
         }
 
         if (supplierId != null) {
             supplier = supplierRepository.findById(supplierId).orElseThrow(
-                () -> new ResourceNotFoundException("Supplier not found by ID: %d".formatted(categoryId))
+                () -> new ResourceNotFoundException("Supplier not found with ID: %d".formatted(categoryId))
             );
         }
 
@@ -142,5 +142,67 @@ public class ProductService {
         ));
 
         return productsResponse;
+    }
+
+    public ProductResponseDto updateProductDetails(Long id, UpdateProductDto updateProductDto) {
+        ProductEntity product = productRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("Product not found with ID: %d".formatted(id))
+        );
+
+        if (updateProductDto.name() != null) {
+            product.setName(updateProductDto.name());
+        }
+
+        if (updateProductDto.sku() != null) {
+            product.setSku(updateProductDto.sku());
+        }
+
+        if (updateProductDto.description() != null) {
+            product.setDescription(updateProductDto.description());
+        }
+
+        if (updateProductDto.price() != null) {
+            product.setPrice(updateProductDto.price());
+        }
+
+        if (updateProductDto.quantity() != null) {
+            product.setQuantity(updateProductDto.quantity());
+        }
+
+        if (updateProductDto.reorderLevel() != null) {
+            product.setReorderLevel(updateProductDto.reorderLevel());
+        }
+
+        if (updateProductDto.categoryId() != null) {
+            CategoryEntity category = categoryRepository.findById(updateProductDto.categoryId()).orElseThrow(
+                () -> new ResourceNotFoundException("Category not found with ID: %d".formatted(updateProductDto.categoryId()))
+            );
+            product.setCategory(category);
+        }
+
+        if (updateProductDto.supplierId() != null) {
+            SupplierEntity supplier = supplierRepository.findById(updateProductDto.supplierId()).orElseThrow(
+                () -> new ResourceNotFoundException("Supplier not found with ID: %d".formatted(updateProductDto.supplierId()))
+            );
+            product.setSupplier(supplier);
+        }
+
+        ProductEntity updatedProduct = productRepository.save(product);
+
+        ProductResponseDto productResponse = new ProductResponseDto(
+            updatedProduct.getId(),
+            updatedProduct.getName(),
+            updatedProduct.getSku(),
+            updatedProduct.getDescription(),
+            updatedProduct.getPrice(),
+            updatedProduct.getQuantity(),
+            updatedProduct.getReorderLevel(),
+            updatedProduct.getCategory().getId(),
+            updatedProduct.getSupplier().getName(),
+            updatedProduct.getCreatedAt(),
+            updatedProduct.getUpdatedAt()
+        );
+
+        return productResponse;
     }
 }

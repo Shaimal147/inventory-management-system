@@ -30,8 +30,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
                 AND (:minPrice IS NULL OR p.price >= :minPrice)
                 AND (:maxPrice IS NULL OR p.price <= :maxPrice)
                 AND (
+                    LOWER(p.name) LIKE LOWER(CONCAT ('%', :searchKeyword, '%'))
+                    OR
                     :searchKeyword IS NULL
-                    OR LOWER(p.name) LIKE LOWER(CONCAT ('%', :searchKeyword, '%'))
                     ) 
             """
         )

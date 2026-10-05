@@ -3,7 +3,7 @@ package com.example.backend.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record CreateProductResponseDto(
+public record ProductResponseDto(
         Long id,
         String name,
         String sku,

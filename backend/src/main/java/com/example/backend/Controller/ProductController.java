@@ -3,6 +3,7 @@ package com.example.backend.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +28,8 @@ public class ProductController {
     }
 
     @PostMapping 
-    public ResponseEntity<CreateProductResponseDto> createProduct(@Valid @RequestBody CreateProductDto newProduct) {
-        CreateProductResponseDto response = productService.createProduct(newProduct);
+    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody CreateProductDto newProduct) {
+        ProductResponseDto response = productService.createProduct(newProduct);
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -65,6 +66,15 @@ public class ProductController {
             maxPrice,
             searchKeyword
         );
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(response);
+    }
+
+    @PatchMapping ("/{id}")
+    public ResponseEntity<ProductResponseDto> updateProductDetails(@PathVariable Long id, @RequestBody UpdateProductDto updateProductDto) {
+        ProductResponseDto response = productService.updateProductDetails(id, updateProductDto);
 
         return ResponseEntity
             .status(HttpStatus.OK)
