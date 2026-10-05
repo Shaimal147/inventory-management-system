@@ -11,8 +11,13 @@ import org.springframework.stereotype.Service;
 import com.example.backend.dto.*;
 import com.example.backend.entity.CategoryEntity;
 import com.example.backend.entity.ProductEntity;
+import com.example.backend.entity.StockMovementEntity;
 import com.example.backend.entity.SupplierEntity;
+import com.example.backend.enums.StockMovementEnum;
 import com.example.backend.repository.*;
+
+import jakarta.transaction.Transactional;
+
 import com.example.backend.exception.*;
 
 @Service 
@@ -20,15 +25,18 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final SupplierRepository supplierRepository;
+    private final StockMovementRepository stockMovementRepository;
 
     public ProductService(
         ProductRepository productRepository,
         CategoryRepository categoryRepository,
-        SupplierRepository supplierRepository
+        SupplierRepository supplierRepository,
+        StockMovementRepository stockMovementRepository
     ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.supplierRepository = supplierRepository;
+        this.stockMovementRepository = stockMovementRepository;
     }
 
     public ProductResponseDto createProduct(CreateProductDto newProduct) {
@@ -212,5 +220,50 @@ public class ProductService {
         );
 
         productRepository.delete(product);
+    }
+
+    @Transactional
+    public StockMovementResponseDto createStockMovement(Long id, CreateStockMovementDto createStockMovementDto) {
+        ProductEntity product = productRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("Product not found with ID: %d".formatted(id))
+        );
+
+        if(
+            createStockMovementDto.type() == StockMovementEnum.STOCK_OUT 
+            && 
+            product.getQuantity() < createStockMovementDto.quantity()
+        ) {
+            throw new UnavailableQuantityException("Requested quantity not available");
+        }
+
+        int updatedQuantity = switch (createStockMovementDto.type()) {
+            case STOCK_IN ->
+                product.getQuantity() +  createStockMovementDto.quantity();
+            
+            case STOCK_OUT ->
+                product.getQuantity() - createStockMovementDto.quantity();
+        };
+
+        product.setQuantity(updatedQuantity);
+        productRepository.save(product);
+
+        StockMovementEntity stockMovement = new StockMovementEntity();
+        stockMovement.setProduct(product);
+        stockMovement.setType(createStockMovementDto.type());
+        stockMovement.setQuantity(createStockMovementDto.quantity());
+        stockMovement.setReason(createStockMovementDto.reason());
+
+        StockMovementEntity savedStockMovement = stockMovementRepository.save(stockMovement);
+
+        StockMovementResponseDto response = new StockMovementResponseDto(
+            savedStockMovement.getId(),
+            savedStockMovement.getProduct().getId(),
+            savedStockMovement.getType(),
+            savedStockMovement.getQuantity(),
+            savedStockMovement.getReason(),
+            savedStockMovement.getCreatedAt()
+        );
+
+        return response;
     }
 }

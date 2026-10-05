@@ -20,4 +20,11 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.NOT_FOUND)
             .body(exception.getMessage());
     }
+
+    @ExceptionHandler (UnavailableQuantityException.class)
+    public ResponseEntity<String> handleUnavailableQuantity(UnavailableQuantityException exception) {
+        return ResponseEntity
+            .status(HttpStatus.UNPROCESSABLE_CONTENT)
+            .body(exception.getMessage());
+    }
 }

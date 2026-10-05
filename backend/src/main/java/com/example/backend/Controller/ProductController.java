@@ -90,4 +90,16 @@ public class ProductController {
             .status(HttpStatus.OK)
             .body("Product successfully deleted");
     }
+
+    @PostMapping ("/{id}/stock-movements")
+    public ResponseEntity<StockMovementResponseDto> createStockMovement(
+        @PathVariable Long id,
+        @RequestBody CreateStockMovementDto createStockMovementDto
+    ) {
+        StockMovementResponseDto response = productService.createStockMovement(id, createStockMovementDto);
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(response);
+    }
 }
