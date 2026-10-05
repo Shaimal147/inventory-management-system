@@ -2,6 +2,7 @@ package com.example.backend.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,5 +80,14 @@ public class ProductController {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(response);
+    }
+
+    @DeleteMapping ("/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("Product successfully deleted");
     }
 }

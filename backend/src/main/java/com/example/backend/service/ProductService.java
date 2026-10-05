@@ -205,4 +205,12 @@ public class ProductService {
 
         return productResponse;
     }
+
+    public void deleteProduct(Long id) {
+        ProductEntity product = productRepository.findById(id).orElseThrow(
+            () -> new  ResourceNotFoundException("Product not found with ID: %d".formatted(id))
+        );
+
+        productRepository.delete(product);
+    }
 }
