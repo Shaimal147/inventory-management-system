@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.backend.entity.CategoryEntity;
 import com.example.backend.entity.ProductEntity;
+import com.example.backend.entity.SupplierEntity;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
         boolean existsBySku(String sku);
@@ -19,7 +20,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             """
                 SELECT p
                 FROM ProductEntity p
-                WHERE (:category IS NULL OR p.category = :category) 
+                WHERE (:category IS NULL OR p.category = :category)
+                AND (:supplier IS NULL OR p.supplier = :supplier) 
                 AND (
                     :lowStock IS NULL 
                     OR (:lowStock = TRUE AND p.quantity <= p.reorderLevel) 
@@ -31,6 +33,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
         )
         Page<ProductEntity> findFiltered(
             @Param ("category") CategoryEntity category,
+            @Param ("supplier") SupplierEntity supplier,
             @Param ("lowStock") Boolean lowStock,
             @Param ("minPrice") BigDecimal minPrice,
             @Param ("maxPrice") BigDecimal maxPrice,

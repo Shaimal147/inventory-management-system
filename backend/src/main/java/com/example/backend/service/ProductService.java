@@ -39,11 +39,11 @@ public class ProductService {
         }
 
         CategoryEntity category = categoryRepository.findById(newProduct.categoryId()).orElseThrow(
-            () -> new ResourceNotFoundException("Category not found with id: %d".formatted(newProduct.categoryId()))
+            () -> new ResourceNotFoundException("Category not found with ID: %d".formatted(newProduct.categoryId()))
         );
 
         SupplierEntity supplier = supplierRepository.findById(newProduct.supplierId()).orElseThrow(
-            () -> new ResourceNotFoundException("Supplier not found with id: %d".formatted(newProduct.supplierId()))
+            () -> new ResourceNotFoundException("Supplier not found with ID : %d".formatted(newProduct.supplierId()))
         );
 
         product.setName(newProduct.name());
@@ -76,7 +76,7 @@ public class ProductService {
 
     public GetProductDto getProduct(Long id) {
         ProductEntity product = productRepository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException("Product not found with id: %d".formatted(id))
+            () -> new ResourceNotFoundException("Product not found with ID: %d".formatted(id))
         );
 
         GetProductDto productResponse = new GetProductDto(
@@ -100,6 +100,7 @@ public class ProductService {
         int page,
         int size,
         Long categoryId,
+        Long supplierId,
         Boolean lowStock,
         BigDecimal minPrice,
         BigDecimal maxPrice
@@ -108,6 +109,7 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<ProductEntity> products;
         CategoryEntity category = null;
+        SupplierEntity supplier = null;
 
         if (categoryId != null) {
             category = categoryRepository.findById(categoryId).orElseThrow(
@@ -115,7 +117,13 @@ public class ProductService {
             );
         }
 
-        products = productRepository.findFiltered(category, lowStock, minPrice, maxPrice, pageable);    
+        if (supplierId != null) {
+            supplier = supplierRepository.findById(supplierId).orElseThrow(
+                () -> new ResourceNotFoundException("Supplier not found by ID: %d".formatted(categoryId))
+            );
+        }
+
+        products = productRepository.findFiltered(category, supplier, lowStock, minPrice, maxPrice, pageable);    
 
 
         Page<GetProductDto> productsResponse = products.map(product -> new GetProductDto(

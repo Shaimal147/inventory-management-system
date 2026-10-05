@@ -49,6 +49,7 @@ public class ProductController {
         @RequestParam (value = "page", defaultValue = "0") int page,
         @RequestParam (value = "size", defaultValue = "20") int size,
         @RequestParam (required = false) Long categoryId,
+        @RequestParam (required = false) Long supplierId,
         @RequestParam (required = false) Boolean lowStock,
         @RequestParam (required = false) BigDecimal minPrice,
         @RequestParam (required = false) BigDecimal maxPrice
@@ -57,6 +58,7 @@ public class ProductController {
             page,
             size,
             categoryId,
+            supplierId,
             lowStock,
             minPrice,
             maxPrice
