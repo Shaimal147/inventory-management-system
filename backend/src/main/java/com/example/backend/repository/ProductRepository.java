@@ -28,7 +28,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
                     OR (:lowStock = FALSE AND p.quantity > p.reorderLevel)
                     )
                 AND (:minPrice IS NULL OR p.price >= :minPrice)
-                AND (:maxPrice IS NULL OR p.price <= :maxPrice) 
+                AND (:maxPrice IS NULL OR p.price <= :maxPrice)
+                AND (
+                    :searchKeyword IS NULL
+                    OR LOWER(p.name) LIKE LOWER(CONCAT ('%', :searchKeyword, '%'))
+                    ) 
             """
         )
         Page<ProductEntity> findFiltered(
@@ -37,6 +41,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             @Param ("lowStock") Boolean lowStock,
             @Param ("minPrice") BigDecimal minPrice,
             @Param ("maxPrice") BigDecimal maxPrice,
+            @Param ("searchKeyword") String searchKeyword,
             Pageable pageable
         );
 }

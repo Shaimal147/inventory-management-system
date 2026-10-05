@@ -52,7 +52,8 @@ public class ProductController {
         @RequestParam (required = false) Long supplierId,
         @RequestParam (required = false) Boolean lowStock,
         @RequestParam (required = false) BigDecimal minPrice,
-        @RequestParam (required = false) BigDecimal maxPrice
+        @RequestParam (required = false) BigDecimal maxPrice,
+        @RequestParam (required = false) String searchKeyword
     ) {
         Page<GetProductDto> response = productService.getProducts(
             page,
@@ -61,7 +62,8 @@ public class ProductController {
             supplierId,
             lowStock,
             minPrice,
-            maxPrice
+            maxPrice,
+            searchKeyword
         );
 
         return ResponseEntity

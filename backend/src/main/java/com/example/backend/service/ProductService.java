@@ -103,7 +103,8 @@ public class ProductService {
         Long supplierId,
         Boolean lowStock,
         BigDecimal minPrice,
-        BigDecimal maxPrice
+        BigDecimal maxPrice,
+        String searchKeyword
     ) {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -123,7 +124,7 @@ public class ProductService {
             );
         }
 
-        products = productRepository.findFiltered(category, supplier, lowStock, minPrice, maxPrice, pageable);    
+        products = productRepository.findFiltered(category, supplier, lowStock, minPrice, maxPrice, searchKeyword, pageable);    
 
 
         Page<GetProductDto> productsResponse = products.map(product -> new GetProductDto(
