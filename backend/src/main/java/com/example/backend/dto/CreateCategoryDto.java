@@ -1,14 +1,14 @@
 package com.example.backend.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record CreateCategoryDto(
-    @NotNull
+    @NotBlank 
     @Size (min = 1, max = 50) 
     String name,
 
-    @NotNull
+    @NotBlank
     @Size (max = 100) 
     String description
 ) {
