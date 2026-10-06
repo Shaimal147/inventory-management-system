@@ -1,6 +1,5 @@
 package com.example.backend.exception;
 
-import org.hibernate.mapping.Array;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
