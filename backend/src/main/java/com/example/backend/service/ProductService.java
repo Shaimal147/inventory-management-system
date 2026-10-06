@@ -173,10 +173,6 @@ public class ProductService {
             product.setPrice(updateProductDto.price());
         }
 
-        if (updateProductDto.quantity() != null) {
-            product.setQuantity(updateProductDto.quantity());
-        }
-
         if (updateProductDto.reorderLevel() != null) {
             product.setReorderLevel(updateProductDto.reorderLevel());
         }

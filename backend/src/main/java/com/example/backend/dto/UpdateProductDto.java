@@ -20,9 +20,6 @@ public record UpdateProductDto(
 	BigDecimal price,
 
 	@PositiveOrZero 
-	Integer quantity,
-
-	@PositiveOrZero 
 	Integer reorderLevel,
 
 	@Positive 
