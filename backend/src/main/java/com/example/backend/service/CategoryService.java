@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.*;
 import com.example.backend.entity.*;
+import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.repository.*;
 
 import org.springframework.data.domain.Page;
@@ -46,6 +47,30 @@ public class CategoryService {
             category.getName(),
             category.getDescription()
         ));
+
+        return response;
+    }
+
+    public CategoryResponseDto updateCategory(Long id, UpdateCategoryDto updateCategoryDto) {
+        CategoryEntity category = categoryRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("Category not found with ID: %d".formatted(id))
+        );
+
+        if (updateCategoryDto.name() != null) {
+            category.setName(updateCategoryDto.name());
+        }
+
+        if (updateCategoryDto.description() != null) {
+            category.setDescription(updateCategoryDto.description());
+        }
+
+        CategoryEntity updatedCategory = categoryRepository.save(category);
+
+        CategoryResponseDto response = new CategoryResponseDto(
+            updatedCategory.getId(),
+            updatedCategory.getName(),
+            updatedCategory.getDescription()
+        );
 
         return response;
     }

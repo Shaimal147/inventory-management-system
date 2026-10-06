@@ -52,8 +52,12 @@ public class CategoryController {
     @PatchMapping ("/{id}")
     public ResponseEntity<CategoryResponseDto> updateCategory(
         @PathVariable Long id,
-        @RequestBody 
+        @Valid @RequestBody UpdateCategoryDto updateCategoryDto 
     ) {
+        CategoryResponseDto response = categoryService.updateCategory(id, updateCategoryDto);
 
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(response);
     }
 }
